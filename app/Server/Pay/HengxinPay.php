@@ -28,6 +28,11 @@ NcPzMHuNIoWLlcA7NQIDAQAB
     protected $vdomain = 'http://apivis.hengxinpay.cn';
 
     /**
+     * 签名md5
+     */
+    protected $sign = '56cd5e494bd4435b929c2268d607f197';
+
+    /**
      * 商户编号 merId
      */
     protected $merId = '21910208';
@@ -70,28 +75,36 @@ NcPzMHuNIoWLlcA7NQIDAQAB
      */
     public function remitSubmit($data)
     {
+        // 组装签名参数
+        $map = [
+            'merOrderNo' => $data['merOrderNo'],
+            'amount' => $data['amount'],
+            'notifyUrl' => $data['notifyUrl'],
+            'bankCode' => $data['bankCode'],
+            'submitTime' => time() * 1000,
+            'bankAccountNo' => $data['bankAccountNo'],
+            'bankAccountName' => $data['bankAccountName']
+        ];
         // 自然排序
-        ksort($data);
+        ksort($map);
         $str_build = '';
         foreach ($data as $key => $value) {
             $str_build .= $key . '=' . $value . '&';
         }
         
         // 签名
-        $map['sign'] = strtoupper(md5($str_build . 'key=56cd5e494bd4435b929c2268d607f197'));
-        $map['bankBranchName'] = $data['bankBranchName'] = '';
-        $map['remarks'] = $data['remarks'];
-
+        $map['sign'] = strtoupper(md5($str_build . 'key=' . $this->sign));
+        $map['bankBranchName'] = $data['bankBranchName'] = '';      // 银行分行
+        $map['remarks'] = $data['remarks'];                         // 备注
+        
         //公钥加密需开启openssl扩展 公钥和私钥需要按照上面的格式缩进否则无法识别
         $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),self::REMIT_PUBLICK_KEY);
-        
         $data = [
-            'merId' => '21910208',
-            'version' => '1.1',
+            'merId' => $this->merId,
+            'version' => $this->version,
             'data' => $rsa
         ];
-
-        $result = $this->post_data('http://api.hengxinpay.cn/api/remitOrder/query',json_encode($data,JSON_UNESCAPED_UNICODE));
+        $result = $this->post_data( $this->domain . '/api/remitOrder/query',json_encode($data,JSON_UNESCAPED_UNICODE));
 
         return json_decode($result);
     }
