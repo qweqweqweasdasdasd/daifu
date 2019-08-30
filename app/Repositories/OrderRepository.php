@@ -31,6 +31,14 @@ class OrderRepository extends BaseRepository
     {
         return Order::find($id);
     }
+
+    /**
+     * 根据订单号获取订单信息
+     */
+    public function GetOrderByNo($no)
+    {
+        return Order::where('merOrderNo',$no)->first();
+    }
     /**
      * 获取到所有订单
      */

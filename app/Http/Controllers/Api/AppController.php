@@ -2,12 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Order;
 use Illuminate\Http\Request;
 use App\Server\Pay\HengxinPay;
 use App\Http\Controllers\Controller;
+use App\Repositories\OrderRepository;
+use App\Repositories\RecheckRepository;
 
 class AppController extends Controller
 {
+    /**
+     * 审核仓库
+     */
+    protected $recheck;
+
+    /**
+     * 订单仓库
+     */
+    protected $order;
+
+    /**
+     * 初始化仓库
+     */
+    public function __construct(RecheckRepository $recheck,OrderRepository $order)
+    {
+        $this->recheck = $recheck;
+        $this->order   = $order;
+    }
 
     /**
      * 账户余额
@@ -38,13 +59,39 @@ class AppController extends Controller
 
     /**
      * 下发回调
+     * 修改状态
      */
     public function notify_url()
     {
         $res = (new HengxinPay())->remitOrderCallback();
-
         
-        app('log')->info('回调详情:'.json_encode($res));
-
+        //$res = '{"code":1,"msg":"success","data":"{\"amount\":2,\"merOrderNo\":\"2019083012375446558968\",\"orderNo\":\"201908301652254776239\",\"orderState\":1}"}';
+        //$res1 = '{"code":0,"msg":"11签名错误","data":"{\"amount\":2,\"merOrderNo\":\"2019083012375446558968\",\"orderNo\":\"201908301652254776239\",\"orderState\":1}"}';
+        $rst = json_decode($res);
+        $rst->data = json_decode($rst->data);
+        // 下发接口失败,审核表 备注更新失败原因, 订单表 修改状态 下发失败
+        // 下发接口成功,审核表 备注下发json数据, 订单表 修改状态 下发成功
+        // return success
+        $order = $this->order->GetOrderByNo($rst->data->merOrderNo);
+        $recheck = $this->recheck->GetRecheckByOrderId($order->order_id);
+        // 走事务
+        \DB::beginTransaction();
+        try {
+            if(!$rst->code){
+                $recheck->desc = $rst->msg;
+                $order->order_status = Order::XIAFA_FAIL[0];
+            }else{
+                $recheck->desc = json_encode($rst->data);
+                $order->order_status = Order::XIAFA_SUCCESS[0];
+            }
+            $order->save();
+            $recheck->save();
+            \DB::commit();
+            return 'success';
+        } catch (\Exception $th) {
+            \DB::rollBack();
+            return 'fail';
+        }
+        return 'success';
     }
 }

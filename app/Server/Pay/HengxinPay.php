@@ -34,7 +34,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
     /**
      * 代付商户md5加密字符串
      */
-    protected $sign = '56cd5e494bd4435b929c2268d607f197';
+    protected $sign = '56cd5e494bd4435b929c2268d607f197';   //56cd5e494bd4435b929c2268d607f197
 
     /**
      * 商户编号 merId
@@ -86,31 +86,28 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
     {
         $request=json_decode(file_get_contents("php://input"),true);
         if(!empty($request['data']) && trim($request['data']) != ""){
-            $data=rsa_private_decode($request['data'],self::REMIT_PRIVATE_KEY);
-            app('log')->info('回调详情:'.json_encode($data));
+            $data = $this->rsa_private_decode($request['data'],self::REMIT_PRIVATE_KEY);
+            app('log')->info('亨鑫代付回调通知:'.json_encode($data));
             $map = [
-                'merOrderNo' => $data['merOrderNo'],
                 'amount' => $data['amount'],
-                'notifyUrl' => $data['notifyUrl'],
-                'bankCode' => $data['bankCode'],
-                'submitTime' => $data['submitTime'],
-                'bankAccountNo' => $data['bankAccountNo'],
-                'bankAccountName' => $data['bankAccountName']
+                'merOrderNo' => $data['merOrderNo'],
+                'orderNo' => $data['orderNo'],
+                'orderState' => $data['orderState']
             ];
             ksort($map);
             $str_build='';
             foreach ($map as $key=>$val){
                 $str_build .= $key.'='.$val.'&';
             }
-            $sign= strtoupper(md5($str_build . 'key=' . REMIT_SING_KEY));
+            $sign= strtoupper(md5($str_build . 'key=' . $this->sign));
             if($sign != $data['sign']){
-                return json_decode(['code'=>0,'msg'=>'签名错误']);
+                return json_encode(['code'=>0,'msg'=>'回调信息签名不对','data'=>json_encode($map)]);
             }
             // 拿到回调参数
-            return json_decode(['code'=>1,'msg'=>'success','data'=>$map]);
+            return json_encode(['code'=>1,'msg'=>'success','data'=>json_encode($map)]);
         }
         // data 数据为空
-        return json_decode(['code'=>0,'msg'=>'data 数据为空']);
+        return json_encode(['code'=>0,'msg'=>'data数据为空','data'=>json_encode($map)]);
     }
 
     /**
@@ -128,6 +125,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
             'bankAccountNo' => $data['bankAccountNo'],
             'bankAccountName' => $data['bankAccountName']
         ];
+        app('log')->info('代付详情:'.json_encode($map));
         // 自然排序
         ksort($map);
         $str_build = '';

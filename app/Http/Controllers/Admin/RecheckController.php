@@ -112,7 +112,8 @@ class RecheckController extends Controller
             'remarks' => $request->get('remarks')
         ];
         $res = (new \App\Http\Controllers\Api\AppController())->remitSubmit($d);
-
+        // $res['code'] = 200;
+        // $res['msg'] = '1111';
         // 事务
         \DB::beginTransaction();
         try {
@@ -127,7 +128,7 @@ class RecheckController extends Controller
                 $order->order_status = Order::CHECKING[0];          // 订单状态:接口维护中
                 $recheck->recheck_status = 1;                       // 审核成功
             }else{
-                $order->order_status = Order::XIAFA_SUCCESS[0];     // 订单成功
+                $order->order_status = Order::XIAFA_IMG[0];         // 订单处理中
                                                                     // 记录金额
             }
             $recheck->save();

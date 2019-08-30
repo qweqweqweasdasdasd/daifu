@@ -33,6 +33,13 @@ class RecheckRepository extends BaseRepository
     }
 
     /**
+     * 根据order_id 获取到审核信息
+     */
+    public function GetRecheckByOrderId($order_id)
+    {
+        return Recheck::where(['order_id'=>$order_id])->first();
+    }
+    /**
      * 获取到所有的审核资源
      */
     public function GetRecheck($d)

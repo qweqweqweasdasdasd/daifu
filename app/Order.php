@@ -19,12 +19,13 @@ class Order extends Model
     const XIAFA_SUBMIT = ['1','下发提交'];
 
     const CHECKING = ['2','接口维护中'];
+    
+    const XIAFA_IMG = ['6','下发处理中'];
 
     const XIAFA_SUCCESS = ['3','下发成功'];
 
     const XIAFA_FAIL = ['4','下发失败'];
 
     const ORDER_GUOQI = ['5','订单过期'];
-
 
 }

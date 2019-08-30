@@ -20,6 +20,15 @@ class IndexController extends Controller
      */
     public function welcome()
     {
+        $data = [
+            'bank_count' => '',
+            'tijiao_count' => '',
+            'daozhang_count' => '',
+            'tijiao_amount' => '',
+            'xiafa_amount' => '',
+            'hengxin_count' => '',
+        ];
+        
         return view('admin.index.welcome');
     }
 }

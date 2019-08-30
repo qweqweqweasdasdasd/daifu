@@ -39,6 +39,8 @@ function xiafa_order_show_status($code)
             return '<span class="layui-badge">'.config('order.status')[4].'</span>';
         case '5':
             return '<span class="layui-badge">'.config('order.status')[5].'</span>';
+        case '6':
+            return '<span class="layui-badge layui-bg-blue">'.config('order.status')[6].'</span>';
     }
 }
 /**
