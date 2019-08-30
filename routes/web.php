@@ -29,7 +29,6 @@ Route::group(['middleware'=>['auth:admin','fangqiang']],function(){
     
     Route::any('/GoogleToken','Admin\GoogleTokenController@GoogleToken');                           // 后台管理--谷歌验证 ??
     
-    
 });
 
 

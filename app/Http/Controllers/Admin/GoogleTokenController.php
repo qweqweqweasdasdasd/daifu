@@ -27,7 +27,7 @@ class GoogleTokenController extends Controller
     {
         $key = Google2FA::generateSecretKey(64);
 
-        $google_url = QrCode::size(200)->generate(
+        $google_url = Google2FA::getQRCodeGoogleUrl(
             'Application Name',
             $user['email'],
             $key
