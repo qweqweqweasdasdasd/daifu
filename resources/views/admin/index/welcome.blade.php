@@ -13,8 +13,59 @@
                         </blockquote>
                     </div>
                 </div>
-            </div>     
+            </div>   
             <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">数据统计</div>
+                    <div class="layui-card-body ">
+                        <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                            <li class="layui-col-md2 layui-col-xs6">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>银行卡数</h3>
+                                    <p>
+                                        <cite>66</cite></p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>提交笔数</h3>
+                                    <p>
+                                        <cite>12</cite></p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>到账笔数</h3>
+                                    <p>
+                                        <cite>99</cite></p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>提交金额</h3>
+                                    <p>
+                                        <cite>67</cite></p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>下发金额</h3>
+                                    <p>
+                                        <cite>67</cite></p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6 ">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>第三方余额</h3>
+                                    <p>
+                                        <cite>6766</cite></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>  
+            <!-- <div class="layui-col-md12">
                 <div class="layui-card">
                     <div class="layui-card-header">系统信息</div>
                     <div class="layui-card-body ">
@@ -57,7 +108,7 @@
                         </table>
                     </div>
                 </div>
-            </div>     
+            </div>      -->
             <style id="welcome_style"></style>
             
         </div>

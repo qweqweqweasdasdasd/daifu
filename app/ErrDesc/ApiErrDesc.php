@@ -62,9 +62,11 @@ class ApiErrDesc
      * 订单自定义错误
      */
     const ORDER_SAVE_FAIL = ['7000','订单添加失败'];
-
+    const RECHECK_UNIQU = ['7001','下发60s内不得重复点击'];
     /**
      * 请求接口之后参数修改参数失败
      */
     const REQUEST_FAIL = ['8000','请求接口之后参数修改参数失败'];
+
+
 }

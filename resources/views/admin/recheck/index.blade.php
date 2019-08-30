@@ -41,8 +41,14 @@
                         </form>
                     </div>
                     <div class="layui-card-header">  
-                            <button class="layui-btn" onclick="xadmin.open('查看当前金额','/admin/order/create',800,600,1)">
-                            查看当前金额</button>
+                        <button type="button" class="layui-btn layui-btn-normal" title="点击获取最新当前余额" onclick="NewAmount()">点击获取最新当前余额: <span id="amount"></span> 元</button>
+                        <!-- <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="merOrderNo" placeholder="请输入订单号" autocomplete="off" class="layui-input" value="{{$whereData['merOrderNo']}}" style="width:250px;"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach" >
+                                查询下发状态
+                            </button>
+                        </div> -->
                     </div>
                     <div class="layui-card-body ">
                         <table class="layui-table layui-form">
@@ -159,5 +165,6 @@
     })
 
 </script>
+<script src="/x-admin/js/balance.query.js"></script>
 @endsection
 

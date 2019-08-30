@@ -14,7 +14,9 @@
                         <input type="text" id="amount" name="amount" 
                         autocomplete="off" class="layui-input">
                     </div>
-                    
+                    <div class="layui-form-mid layui-word-aux">
+                        <span class="x-red">*</span>金额最低2元, 最高以平哥那边金额为准.
+                    </div>
                 </div>
                 <div class="layui-form-item">
                     <label for="username" class="layui-form-label">
@@ -85,6 +87,9 @@
                             xadmin.close();
                             xadmin.father_reload();
                         })
+                    }
+                    if(res.code == 0){
+                        layer.msg(res.msg);
                     }
                     if(res.code == '422'){
                         layer.msg(res.msg);

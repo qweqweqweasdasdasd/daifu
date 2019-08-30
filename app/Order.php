@@ -18,7 +18,7 @@ class Order extends Model
 
     const XIAFA_SUBMIT = ['1','下发提交'];
 
-    const CHECKING = ['2','审核中'];
+    const CHECKING = ['2','接口维护中'];
 
     const XIAFA_SUCCESS = ['3','下发成功'];
 

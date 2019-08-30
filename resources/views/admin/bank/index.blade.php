@@ -26,7 +26,7 @@
                                 <input class="layui-input"  autocomplete="off" placeholder="截止日" name="end" id="end" value="{{$whereData['end']}}">
                             </div>
                             <div class="layui-inline layui-show-xs-block">
-                                <input type="text" name="bankAccountNo" value="{{$whereData['bankAccountNo']}}" placeholder="请输入银行账号" autocomplete="off" class="layui-input">
+                                <input type="text" name="bankAccountNo" value="{{$whereData['bankAccountNo']}}" placeholder="请输入银行账号" autocomplete="off" class="layui-input" style="width:250px;">
                             </div>
                             <div class="layui-inline layui-show-xs-block">
                                 <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>

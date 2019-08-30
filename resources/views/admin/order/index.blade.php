@@ -44,15 +44,14 @@
                     <div class="layui-card-header">  
                         <button class="layui-btn" onclick="xadmin.open('下发操作','/admin/order/create',800,600,1)">
                             <i class="layui-icon"></i>下发操作</button>
-                            <button class="layui-btn" onclick="xadmin.open('下发操作','/admin/order/create',800,600,1)">
-                            查看当前金额</button>
+                        <button type="button" class="layui-btn layui-btn-normal" title="点击获取最新当前余额" onclick="NewAmount()">点击获取最新当前余额: <span id="amount"></span> 元</button>
                     </div>
                     <div class="layui-card-body ">
                         <table class="layui-table layui-form">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>订单编号(点击查看详情)</th>
+                                    <th>订单编号(查看订单信息)</th>
                                     <!-- <th>下发金额</th> -->
                                     <!-- <th>操作者</th> -->
                                     <!-- <th>下发卡详细</th> -->
@@ -69,7 +68,7 @@
                                 @foreach($getOrder as $v)
                                 <tr>
                                     <td>{{$v->order_id}}</td>
-                                    <td>{{$v->merOrderNo}} <a href="#" onclick="xadmin.open('查看订单详情','/admin/order/check/{{$v->order_id}}',700,500)" >&nbsp;&nbsp;<i class="layui-icon">&#xe615;</i></a></td>
+                                    <td>{{$v->merOrderNo}} <a href="#" onclick="xadmin.open('查看订单信息','/admin/order/check/{{$v->order_id}}',700,500)" >&nbsp;&nbsp;<i class="layui-icon">&#xe615;</i></a></td>
                                     <!-- <td>{{$v->amount}}</td> -->
                                     <!-- <td>{{$v->operator}}</td> -->
                                     <!-- <td>{{$v->bank_info}}</td> -->
@@ -122,7 +121,7 @@
 
         
     })
-
 </script>
+<script src="/x-admin/js/balance.query.js"></script>
 @endsection
 

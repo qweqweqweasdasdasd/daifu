@@ -142,7 +142,7 @@
                     </li>
                 </ul>
             </li>
-            <li>
+            <!-- <li>
                 <a href="javascript:;">
                     <i class="iconfont left-nav-li" lay-tips="系统统计">&#xe6ce;</i>
                     <cite>系统统计</cite>
@@ -189,7 +189,7 @@
                             <cite>仪表图</cite></a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <!-- <li>
                 <a href="javascript:;">
                     <i class="iconfont left-nav-li" lay-tips="图标字体">&#xe6b4;</i>

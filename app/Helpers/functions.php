@@ -49,7 +49,7 @@ function shenhe_recheck_show_status($code)
 {
     switch($code){
         case '1':
-                return '<span class="layui-badge layui-bg-green">已审核</span>';
+            return '<span class="layui-badge layui-bg-green">已审核</span>';
         case '2':
             return '<span class="layui-badge layui-bg-blue">未审核</span>';
     }

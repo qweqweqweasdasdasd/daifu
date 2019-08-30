@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Order;
+use App\Libs\ToolRedis;
 use App\ErrDesc\ApiErrDesc;
 use Illuminate\Http\Request;
+use App\Server\Pay\ExtendPay;
 use App\Resphonse\JsonResphonse;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
@@ -12,6 +14,10 @@ use App\Repositories\RecheckRepository;
 
 class RecheckController extends Controller
 {
+    /**
+     * 下发订单前缀
+     */
+    protected $prefix = 'df';
     /**
      * 银行仓库
      */
@@ -66,6 +72,7 @@ class RecheckController extends Controller
         $order->bankCode = $bank_info['bankCode'];
         $order->bankAccountNo = $bank_info['bankAccountNo'];
         $order->bankAccountName = $bank_info['bankAccountName'];
+        
         if($order->order_status == Order::XIAFA_FAIL[0] || $order->order_status == Order::XIAFA_SUCCESS[0] || $order->order_status == Order::ORDER_GUOQI[0]){
             return '订单号: ' . $order->merOrderNo . '-已经下发处理,如果没有到账查看状态!';
         }
@@ -82,8 +89,29 @@ class RecheckController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 请求代付接口(队列)  ??
-        $res['code'] = true;
+        // 订单重复提交问题 prefix
+        $res = ToolRedis::RecheckOrderUniqu($this->prefix,$request->get('merOrderNo'));
+        if($res){
+            return JsonResphonse::JsonData(ApiErrDesc::RECHECK_UNIQU[0],ApiErrDesc::RECHECK_UNIQU[1]);
+        }
+        
+        // 下发提交金额是否小于第三方余额
+        $res = ExtendPay::VerifyAmount($request->get('amount'));
+        if(!$res['code']){
+            return JsonResphonse::JsonData($res['code'],$res['msg']);
+        }
+
+        // 组装接口 && 请求代付接口(队列) 
+        $d = [
+            'merOrderNo' => $request->get('merOrderNo'),
+            'amount' => $request->get('amount'),
+            'notifyUrl' => config('order.notifyUrl'),
+            'bankCode' => $request->get('bankCode'),
+            'bankAccountNo' => $request->get('bankAccountNo'),
+            'bankAccountName' => $request->get('bankAccountName'),
+            'remarks' => $request->get('remarks')
+        ];
+        $res = (new \App\Http\Controllers\Api\AppController())->remitSubmit($d);
 
         // 事务
         \DB::beginTransaction();
@@ -93,12 +121,15 @@ class RecheckController extends Controller
             // 审核表状态修改,备注信息(接口返回信息),操作者记录
             $recheck->recheck_status = 1;
             $recheck->re_operator = \Auth::guard('admin')->user()->mg_name;
-            $recheck->desc = '接口返回的信息';
+            $recheck->desc = $res['msg'];
             // 下发订单表状态修改
-            if(!$res['code']){
-                $order->order_status = Order::XIAFA_FAIL[0];
+            if($res['code'] != 200){
+                $order->order_status = Order::CHECKING[0];          // 订单状态:接口维护中
+                $recheck->recheck_status = 1;                       // 审核成功
+            }else{
+                $order->order_status = Order::XIAFA_SUCCESS[0];     // 订单成功
+                                                                    // 记录金额
             }
-            $order->order_status = Order::XIAFA_SUCCESS[0];
             $recheck->save();
             $order->save();
             \DB::commit();

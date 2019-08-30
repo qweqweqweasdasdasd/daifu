@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Order;
 use App\ErrDesc\ApiErrDesc;
 use Illuminate\Http\Request;
+use App\Server\Pay\ExtendPay;
 use App\Resphonse\JsonResphonse;
 use App\Http\Requests\OrderRequest;
 use App\Http\Controllers\Controller;
@@ -89,6 +90,12 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
+        // 下发提交金额是否小于第三方余额
+        $res = ExtendPay::VerifyAmount($request->get('amount'));
+        //dd($res);
+        if(!$res['code']){
+            return JsonResphonse::JsonData($res['code'],$res['msg']);
+        }
         $json = json_encode([
             'bankCode' => $request->get('bankCode'),
             'bankAccountNo' => $request->get('bankAccountNo'),

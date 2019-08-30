@@ -7,28 +7,32 @@ use GuzzleHttp\Client;
 
 class HengxinPay 
 {
-        /**
+    /**
      * 代付商户分配公钥
      */
 const REMIT_PUBLICK_KEY = "-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCU8ZvQVcUv5CJnw+kPCGlBW3XS
-RdhgpZ7LenvJYj9lU7P3IBWXMzeydMxq902RaMAvmChdyjiubnEUUs31Y7wn5gzc
-wyQw6kKOKvuik/0pedUNxuypk9k3x0oXrAuYJcdH5uEciVSznIUz8KN4PgeRPPrj
-NcPzMHuNIoWLlcA7NQIDAQAB
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKjbWFwVU7vfyld9hd7RGEMwVvT1ZtiEXk+uXWRFI7as279Z8zSwt278O4R9PPxyIf7jriNPzPIJzGVsh1081fIPIornY1F+VM5lcZ1CpgBVkVwp/YVAyoILLZsLwP+l8QY5COtWcWwm9m7nnTlspFnAWHlXTkG/9xexpjqYGH6QIDAQAB
 -----END PUBLIC KEY-----";
 
     /**
-     * 线上网关域名 
+     * 代付商户分配私钥
+     */
+const REMIT_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----
+MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+mWuBUsXSQaRlRTsNv8h7TCkhk2PCshOF9BRmKob793t03jHl6P06GnL2hsw4Qth01M6ulZwwfyYAq95+s3Jo/+lyjkSvfPJChlMp9mkZjocLGly71A5ul1EQIejL1xntz3n9CU/jnQ3lbAgMBAAECgYBCcfEHCvwqVU2fc30cqQVI1opRC6UMrJPog0VxUkDPmWhOrtwh8hcbJYXdTfNwpcPYCZfkFU4cyjAi0AouU0XOvVoYtnErYpJR1Ulz+yousd3LAUaSdk10s4z0a52eqpuGAKup7GPB+bc0W8LPmhMuy2JXOON+W1A7uz3WDTKn0QJBAO9QJtXEO2UIFZSNk5LQJ7w3ZRAnyClF5zFNAZIhK40RvqDk4HBNQ7kX/7ndOBpMnZK0TqMXH1/q9LTmW6oF6+kCQQCvfC32u+WJyota6aQslxztvQdETclkGUvhchSioS7vv0RppjQF42DX2HLa6SzEqbu/oB7A94X7pIv5pc6WVaSjAkEAlgZcYjSju4Gm7bsXobkmv+LGU6ts2xr8hbat3ms2/zf5lqoFXcHCS/4UjfN2IV6YhgjNJ4buX1ZPVDz5iAwwSQJAfYfmVWbJ50ylbU5PK7qZbhNXfGvskZdq6YWy7zdAHS6EYNMMyd2CrETgvGoqpTAJ5yVCeqVWCdIGc3pBktcG4wJBANNMCu4s6N892VCCTvfPq4x6vrnOlRL4kv/DGTORpHUZ5K2P3yEdRwm4X4viAvVwbB3TwmWGxTn/kb4aelxYoKA=
+-----END RSA PRIVATE KEY-----";
+
+    /**
+     * 线上网关域名
      */
     protected $domain = 'http://api.hengxinpay.cn';
 
     /**
-     * 测试网关域名 
+     * 测试网关域名
      */
     protected $vdomain = 'http://apivis.hengxinpay.cn';
 
     /**
-     * 签名md5
+     * 代付商户md5加密字符串
      */
     protected $sign = '56cd5e494bd4435b929c2268d607f197';
 
@@ -42,23 +46,6 @@ NcPzMHuNIoWLlcA7NQIDAQAB
      */
     protected $version = '1.1';
 
-    /**
-     * guzzle 实例化对象
-     */
-    protected $client = '';
-
-    /**
-     * 初始化guzzle
-     */
-    public function __construct()
-    {
-        $this->client = new Client([
-            'headers' => [ 
-                'Content-Type' => 'application/json'
-            ],
-            'timeout' => 2.0,
-        ]);
-    }
 
     /**
      * 亨鑫余额查询接口
@@ -66,8 +53,64 @@ NcPzMHuNIoWLlcA7NQIDAQAB
      * post 
      */
     public function CheckBalance()
-    {
+    {   
+        // 组装签名参数
+        $map = [
+            'merId' => $this->merId,
+        ];
+        // 自然排序
+        ksort($map);
+        $str_build = '';
+        foreach ($map as $key => $value) {
+            $str_build .= $key . '=' . $value . '&';
+        }    
+        // 签名
+        $map['sign'] = strtoupper(md5($str_build . 'key=' . $this->sign)); 
+
+        $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),self::REMIT_PUBLICK_KEY);
+
+        $data = [
+            'merId' => $this->merId,
+            'version' => $this->version,
+            'data' => $rsa
+        ];
+        $result = $this->post_data($this->domain . '/api/balance/query',json_encode($data,JSON_UNESCAPED_UNICODE));
         
+        return json_decode($result);
+    }
+
+    /**
+     * 亨鑫代付回调通知
+     */
+    public function remitOrderCallback()
+    {
+        $request=json_decode(file_get_contents("php://input"),true);
+        if(!empty($request['data']) && trim($request['data']) != ""){
+            $data=rsa_private_decode($request['data'],self::REMIT_PRIVATE_KEY);
+            app('log')->info('回调详情:'.json_encode($data));
+            $map = [
+                'merOrderNo' => $data['merOrderNo'],
+                'amount' => $data['amount'],
+                'notifyUrl' => $data['notifyUrl'],
+                'bankCode' => $data['bankCode'],
+                'submitTime' => $data['submitTime'],
+                'bankAccountNo' => $data['bankAccountNo'],
+                'bankAccountName' => $data['bankAccountName']
+            ];
+            ksort($map);
+            $str_build='';
+            foreach ($map as $key=>$val){
+                $str_build .= $key.'='.$val.'&';
+            }
+            $sign= strtoupper(md5($str_build . 'key=' . REMIT_SING_KEY));
+            if($sign != $data['sign']){
+                return json_decode(['code'=>0,'msg'=>'签名错误']);
+            }
+            // 拿到回调参数
+            return json_decode(['code'=>1,'msg'=>'success','data'=>$map]);
+        }
+        // data 数据为空
+        return json_decode(['code'=>0,'msg'=>'data 数据为空']);
     }
 
     /**
@@ -88,15 +131,13 @@ NcPzMHuNIoWLlcA7NQIDAQAB
         // 自然排序
         ksort($map);
         $str_build = '';
-        foreach ($data as $key => $value) {
+        foreach ($map as $key => $value) {
             $str_build .= $key . '=' . $value . '&';
-        }
-        
+        }    
         // 签名
-        $map['sign'] = strtoupper(md5($str_build . 'key=' . $this->sign));
+        $map['sign'] = strtoupper(md5($str_build . 'key=' . $this->sign));      
         $map['bankBranchName'] = $data['bankBranchName'] = '';      // 银行分行
         $map['remarks'] = $data['remarks'];                         // 备注
-        
         //公钥加密需开启openssl扩展 公钥和私钥需要按照上面的格式缩进否则无法识别
         $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),self::REMIT_PUBLICK_KEY);
         $data = [
@@ -104,9 +145,19 @@ NcPzMHuNIoWLlcA7NQIDAQAB
             'version' => $this->version,
             'data' => $rsa
         ];
-        $result = $this->post_data( $this->domain . '/api/remitOrder/query',json_encode($data,JSON_UNESCAPED_UNICODE));
-
+        
+        $result = $this->post_data($this->domain . '/api/remitOrder/submit',json_encode($data,JSON_UNESCAPED_UNICODE));
         return json_decode($result);
+    }
+
+    /**
+     * 解密rsa
+     */
+    public function decode($content)
+    {
+        $res = $this->rsa_private_decode($content,self::REMIT_PRIVATE_KEY);
+
+        return $res;
     }
 
     /**
@@ -139,7 +190,7 @@ NcPzMHuNIoWLlcA7NQIDAQAB
         return $crypto?base64_encode($crypto):null;
     
     }
-
+    
     /**
      * 解密
      */

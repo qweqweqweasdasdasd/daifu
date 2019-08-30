@@ -29,12 +29,7 @@ Route::group(['middleware'=>['auth:admin','fangqiang']],function(){
     
     Route::any('/GoogleToken','Admin\GoogleTokenController@GoogleToken');                           // 后台管理--谷歌验证 ??
     
-    /**
-     * 支付平台商家接口
-     */
-    Route::any('/check/balance/{way}','Server\ApiController@CheckBalance');   // 查询余额接口
     
-    Route::any('/payanother/submit','Server\ApiController@submit');           // 代付接口
 });
 
 
