@@ -3,41 +3,53 @@
 namespace App\Http\Controllers\Admin;
 
 use Google2FA;
+use App\Manager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class GoogleTokenController extends Controller
 {
     /**
-     * 渲染激活视图或者禁用视图
+     * 显示管理员列表
      */
-    public function GoogleToken()
+    public function ShowManager()
     {
-        // 用户是否存在google_token
-        $user = [
-            'email' => 'Qq88678867@gmail.com'
-        ];
-        return $this->showEnableTokenForm($user);
+        $managers = Manager::where('mg_status','1')->get();
+        //dump($managers);
+        return view('admin.google.token.show',compact('managers'));
     }
 
+    /**
+     * 渲染激活视图或者禁用视图
+     */
+    public function GoogleToken(Request $request)
+    {
+        $mg_id = $request->get('mg_id');
+        // 用户是否存在google_token
+        $user = Manager::where('mg_id',$mg_id)->first();
+        //dd($user);
+        return $this->showEnableTokenForm($user);
+    }
+    
     /**
      * 显示激活视图
      */
     public function showEnableTokenForm($user)
     {
+        
         $key = Google2FA::generateSecretKey(64);
-
-        $google_url = Google2FA::getQRCodeGoogleUrl(
-            'Application Name',
-            $user['email'],
+        $user->google_token = $key;
+        $user->save();
+        $google2fa_url = Google2FA::getQRCodeInline(
+            env('APP_NAME'),
+            $user->mg_name,
             $key
         );
         
-        dd($google_url);
-        return view('admin.google.token.enable',[
+        return view('admin.google.token.show',[
             'user' => $user,
             'key' => $key,
-            'QRCode' => $google_url
+            'QRCode' => $google2fa_url
         ]);
     }
 }

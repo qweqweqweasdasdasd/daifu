@@ -26,7 +26,7 @@ class AuthRequest extends FormRequest
         return [
             'mg_name' => 'required|max:16|min:2',
             'password' => 'required|max:16|min:4',
-            'gooleToken' => 'required'
+            'gooleToken' => 'required|numeric'
         ];
     }
 
@@ -42,7 +42,9 @@ class AuthRequest extends FormRequest
             'password.required' => '管理员密码必须填写!',
             'password.max' => '管理员密码不得超出16个字符!',
             'password.min' => '管理员密码不得小于4个字符!',
-            'gooleToken.required' => '谷歌二次验证不得为空1'
+            'gooleToken.required' => '谷歌二次验证不得为空1',
+            //'gooleToken.same' => '谷歌验证必须为6位',
+            'gooleToken.numeric' => '格式为数值'
         ];
     }
 }

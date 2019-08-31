@@ -1,6 +1,6 @@
 <?php
 
-Route::get('/admin/login','Admin\AuthController@login')->name('login');   // 后台管理--显示登录
+Route::get('/admin/login','Admin\AuthController@login')->name('login');         // 后台管理--显示登录
 Route::post('/admin/login','Admin\AuthController@DoLogin');                     // 后台管理--登录动作
 Route::get('/admin/logout','Admin\AuthController@logout');                      // 后台管理--退出登录
 
@@ -27,9 +27,13 @@ Route::group(['middleware'=>['auth:admin','fangqiang']],function(){
     Route::post('/admin/bank/getOne/{bank}','Admin\BankController@getOne');                         // 获取到指定一条银行信息   
     Route::resource('/admin/bank','Admin\BankController',['names' => ['show' => 'bank.status']]);   // 银行资源路由管理
     
-    Route::any('/GoogleToken','Admin\GoogleTokenController@GoogleToken');                           // 后台管理--谷歌验证 ??
     
 });
 
+/**
+ * 外人不可获取到这个url地址
+ */
+Route::get('/secret/ShowManager','Admin\GoogleTokenController@ShowManager');                           // 后台管理--显示管理员
+Route::post('/secret/GoogleToken','Admin\GoogleTokenController@GoogleToken');                          // 后台管理--谷歌验证
 
 

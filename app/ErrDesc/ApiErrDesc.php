@@ -15,6 +15,8 @@ class ApiErrDesc
     const USER_AUTH_FAIL = ['2000','管理员认证失败,用户密码或者账号不符!']; 
 
     const USER_BAN_STATUS = ['2001','管理员状态被禁止使用,请联系超级管理员!'];
+
+    const GOOLE_VERIFY_FAIL = ['2002','谷歌二次验证失败'];
     
     /**
      * 公用自定义成错误

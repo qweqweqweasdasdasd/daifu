@@ -13,7 +13,7 @@
         <hr class="hr15">
         <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
         <hr class="hr15">
-        <input name="gooleToken" lay-verify="required" placeholder="谷歌二次验证"  type="password" class="layui-input">
+        <input name="gooleToken" lay-verify="required" placeholder="谷歌二次验证"  type="text" class="layui-input">
         <hr class="hr15">
         <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
         <hr class="hr20" >
@@ -45,6 +45,9 @@
                             layer.msg(res.msg)
                         }
                         if(res.code == '2000'){
+                            layer.msg(res.msg)
+                        }
+                        if(res.code == '2002'){
                             layer.msg(res.msg)
                         }
                         if(res.code == '422'){
