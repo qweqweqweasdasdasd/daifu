@@ -45,11 +45,13 @@ class GoogleTokenController extends Controller
             $user->mg_name,
             $key
         );
-        
-        return view('admin.google.token.show',[
-            'user' => $user,
-            'key' => $key,
-            'QRCode' => $google2fa_url
-        ]);
+        return [
+            'code'=>1,
+            'data'=>[
+                'user' => $user,
+                'key' => $key,
+                'QRCode' => $google2fa_url
+            ]
+        ];
     }
 }

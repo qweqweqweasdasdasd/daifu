@@ -30,7 +30,7 @@
                         </div>
                         <div class="layui-form-item" id="content">
                             <label  class="layui-form-label"></label>
-                            <img src="@{{ $QRCode }}" alt="" >
+                            <img src="" alt="" id="QRCode" >
                         </div>
                     </form>
                 </div>
@@ -63,10 +63,9 @@
                 },
                 success:function(res){
                     if(res.code == '1'){
-                        layer.alert(res.msg,{icon:6},function(){
-                            xadmin.close();
-                            xadmin.father_reload();
-                        })
+                        debugger;
+                        var QRCode = res.data.QRCode;
+                        $('#QRCode').attr('src',QRCode);
                     }
                     if(res.code == ''){
                         layer.msg(res.msg,{icon:5})
