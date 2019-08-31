@@ -66,7 +66,7 @@ class OrderRepository extends BaseRepository
      */
     public function GenerateNo()
     {
-        return date('YmdHis',time()) . rand(00000000,99999999);
+        return date('YmdHis',time()) . rand(11111111,99999999);
     }
     
 }

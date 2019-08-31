@@ -63,7 +63,7 @@
                 },
                 success:function(res){
                     if(res.code == '1'){
-                        debugger;
+                        //debugger;
                         var QRCode = res.data.QRCode;
                         $('#QRCode').attr('src',QRCode);
                     }

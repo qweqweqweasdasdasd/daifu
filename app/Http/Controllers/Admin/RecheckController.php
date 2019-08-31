@@ -7,6 +7,7 @@ use App\Libs\ToolRedis;
 use App\ErrDesc\ApiErrDesc;
 use Illuminate\Http\Request;
 use App\Server\Pay\ExtendPay;
+use App\Server\Pay\HengxinPay;
 use App\Resphonse\JsonResphonse;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
@@ -111,9 +112,9 @@ class RecheckController extends Controller
             'bankAccountName' => $request->get('bankAccountName'),
             'remarks' => $request->get('remarks')
         ];
-        $res = (new \App\Http\Controllers\Api\AppController())->remitSubmit($d);
-        // $res['code'] = 200;
-        // $res['msg'] = '1111';
+        $res = (new HengxinPay())->remitSubmit($d);
+        // $res->code = 200;
+        // $res->msg = '1111';
         // 事务
         \DB::beginTransaction();
         try {
@@ -122,9 +123,9 @@ class RecheckController extends Controller
             // 审核表状态修改,备注信息(接口返回信息),操作者记录
             $recheck->recheck_status = 1;
             $recheck->re_operator = \Auth::guard('admin')->user()->mg_name;
-            $recheck->desc = $res['msg'];
+            $recheck->desc = $res->message;
             // 下发订单表状态修改
-            if($res['code'] != 200){
+            if($res->code != 200){
                 $order->order_status = Order::CHECKING[0];          // 订单状态:接口维护中
                 $recheck->recheck_status = 1;                       // 审核成功
             }else{

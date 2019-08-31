@@ -17,6 +17,8 @@ class ApiErrDesc
     const USER_BAN_STATUS = ['2001','管理员状态被禁止使用,请联系超级管理员!'];
 
     const GOOLE_VERIFY_FAIL = ['2002','谷歌二次验证失败'];
+
+    const GOOLE_BINDING_NO = ['2003','谷歌账号没有绑定'];
     
     /**
      * 公用自定义成错误

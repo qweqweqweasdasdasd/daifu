@@ -50,6 +50,9 @@
                         if(res.code == '2002'){
                             layer.msg(res.msg)
                         }
+                        if(res.code == '2003'){
+                            layer.msg(res.msg)
+                        }
                         if(res.code == '422'){
                             layer.msg(res.msg)
                         }

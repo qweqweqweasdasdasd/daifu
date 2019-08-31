@@ -110,7 +110,7 @@
                             xadmin.father_reload();
                         })
                     }
-                    if(res.code == ''){
+                    if(res.code == '7001'){
                         layer.msg(res.msg,{icon:5})
                     }
                     if(res.code == '422'){

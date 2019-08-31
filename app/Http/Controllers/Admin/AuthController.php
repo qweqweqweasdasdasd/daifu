@@ -49,6 +49,11 @@ class AuthController extends Controller
         // 谷歌二次验证     
         if($this->gooleVerify){
             $secretKey = (Auth::guard('admin')->user()->google_token);
+            
+            if(!$secretKey){
+                Auth::guard('admin')->logout();
+                return JsonResphonse::JsonData(ApiErrDesc::GOOLE_BINDING_NO[0],ApiErrDesc::GOOLE_BINDING_NO[1]);
+            }
             $verify = Google2FA::verifyKey($secretKey, $request->input('gooleToken'));
             if(!$verify){
                 Auth::guard('admin')->logout();
