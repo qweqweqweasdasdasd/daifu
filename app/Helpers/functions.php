@@ -58,6 +58,34 @@ function shenhe_recheck_show_status($code)
 }
 
 /**
+ * 亨鑫接口返回信息
+ */
+function interface_return_bank_info($data)
+{   
+    $is_json = strpos($data,"{");
+    if($is_json === false){
+        return $data;
+    }
+    $json =  json_decode($data);
+    
+    return '实际下发金额:' . $json->amount .'元'. ' 订单号:' . $json->merOrderNo . ' 亨鑫单号:' . $json->orderNo . ' 订单状态:' . status($json->orderState);
+}
+
+/**
+ * 亨鑫接口返回信息--附加 状态
+ */
+function status($orderState)
+{
+    switch ($orderState) {
+        case '0':
+            return $status = '处理中';
+        case '1':
+            return $status = '成功';
+        case '2':
+            return $status = '失败';
+    }
+}
+/**
  * 递归方式获取上下级权限信息
  */
 function generateTree($data){

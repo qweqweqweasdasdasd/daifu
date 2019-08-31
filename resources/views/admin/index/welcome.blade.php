@@ -21,44 +21,44 @@
                         <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
                             <li class="layui-col-md2 layui-col-xs6">
                                 <a href="javascript:;" class="x-admin-backlog-body">
-                                    <h3>银行卡数</h3>
+                                    <h3>{{$data['bank']['name']}}</h3>
                                     <p>
-                                        <cite>66</cite></p>
+                                        <cite>{{$data['bank']['count']}} 张</cite></p>
                                 </a>
                             </li>
                             <li class="layui-col-md2 layui-col-xs6">
-                                <a href="javascript:;" class="x-admin-backlog-body">
-                                    <h3>提交笔数</h3>
+                                <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
+                                    <h3>{{$data['tijiao']['name']}}</h3>
                                     <p>
-                                        <cite>12</cite></p>
+                                        <cite>{{$data['tijiao']['count']}} 笔</cite></p>
                                 </a>
                             </li>
                             <li class="layui-col-md2 layui-col-xs6">
-                                <a href="javascript:;" class="x-admin-backlog-body">
-                                    <h3>到账笔数</h3>
+                                <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
+                                    <h3>{{$data['daozhang']['name']}}</h3>
                                     <p>
-                                        <cite>99</cite></p>
+                                        <cite>{{$data['daozhang']['count']}} 笔</cite></p>
                                 </a>
                             </li>
                             <li class="layui-col-md2 layui-col-xs6">
-                                <a href="javascript:;" class="x-admin-backlog-body">
-                                    <h3>提交金额</h3>
+                                <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
+                                    <h3>{{$data['tijiao_amount']['name']}}</h3>
                                     <p>
-                                        <cite>67</cite></p>
+                                        <cite>{{$data['tijiao_amount']['count']}} 元</cite></p>
                                 </a>
                             </li>
                             <li class="layui-col-md2 layui-col-xs6">
-                                <a href="javascript:;" class="x-admin-backlog-body">
-                                    <h3>下发金额</h3>
+                                <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
+                                    <h3>{{$data['xiafa_amount']['name']}}</h3>
                                     <p>
-                                        <cite>67</cite></p>
+                                        <cite>{{$data['xiafa_amount']['count']}} 元</cite></p>
                                 </a>
                             </li>
                             <li class="layui-col-md2 layui-col-xs6 ">
-                                <a href="javascript:;" class="x-admin-backlog-body">
+                                <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
                                     <h3>第三方余额</h3>
                                     <p>
-                                        <cite>6766</cite></p>
+                                        <cite>{{$data['HengXinBalance']}} 元</cite></p>
                                 </a>
                             </li>
                         </ul>

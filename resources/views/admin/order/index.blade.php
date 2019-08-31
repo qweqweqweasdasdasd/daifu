@@ -74,7 +74,7 @@
                                     <!-- <td>{{$v->bank_info}}</td> -->
                                     <td><a href="#" onclick="xadmin.open('查看订单详情','/admin/order/recheck/{{$v->order_id}}',700,500)" class="layui-btn layui-btn-warm">审核查看</a></td>
                                     <td>{{$v->remarks}}</td>
-                                    <td>{{$v->desc}}</td>
+                                    <td>{!! interface_return_bank_info($v->desc) !!}</td>
                                     <!-- <td>{{$v->created_at}}</td> -->
                                     <td>{!! xiafa_order_show_status($v->order_status) !!}</td>
                                     <td>{!! shenhe_recheck_show_status($v->recheck_status) !!}</td>

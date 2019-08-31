@@ -3,10 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Server\Pay\HengxinPay;
 use App\Http\Controllers\Controller;
+use App\Repositories\CountRepository;
 
 class IndexController extends Controller
 {
+    /**
+     * 角色仓库
+     */
+    protected $count;
+
+    /**
+     * 初始化仓库
+     */
+    public function __construct(CountRepository $count)
+    {
+        $this->count = $count;
+    }
+
     /**
      * 后台主页
      */
@@ -20,15 +35,20 @@ class IndexController extends Controller
      */
     public function welcome()
     {
+        $res = (new HengxinPay())->CheckBalance();
+        if(!$res->code == 200){
+            $HengXinBalance = '失败';
+        }
+
         $data = [
-            'bank_count' => '',
-            'tijiao_count' => '',
-            'daozhang_count' => '',
-            'tijiao_amount' => '',
-            'xiafa_amount' => '',
-            'hengxin_count' => '',
+            'bank' => $this->count->CountBankNumber(),
+            'tijiao' => $this->count->CountOrderNumber(),
+            'daozhang' => $this->count->CountDaozhangNumber(),
+            'tijiao_amount' => $this->count->CountTJAmountNumber(),
+            'xiafa_amount' => $this->count->CountXFAmountNumber(),
+            'HengXinBalance' => $res->data->usableAmount,
         ];
-        
-        return view('admin.index.welcome');
+        //dump($data);
+        return view('admin.index.welcome',compact('data'));
     }
 }

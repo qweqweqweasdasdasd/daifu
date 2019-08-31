@@ -14,6 +14,10 @@ use App\Http\Controllers\Controller;
 class AuthController extends Controller
 {
     /**
+     * 二次验证开关
+     */
+    protected $gooleVerify = false;
+    /**
      * 显示登录页面
      */
     public function login()
@@ -41,13 +45,17 @@ class AuthController extends Controller
             // 管理员状态停用
             return JsonResphonse::JsonData(ApiErrDesc::USER_BAN_STATUS[0],ApiErrDesc::USER_BAN_STATUS[1]);
         };
-        $secretKey = (Auth::guard('admin')->user()->google_token);
+
         // 谷歌二次验证     
-        $verify = Google2FA::verifyKey($secretKey, $request->input('gooleToken'));
-        if(!$verify){
-            Auth::guard('admin')->logout();
-            return JsonResphonse::JsonData(ApiErrDesc::GOOLE_VERIFY_FAIL[0],ApiErrDesc::GOOLE_VERIFY_FAIL[1]);
+        if($this->gooleVerify){
+            $secretKey = (Auth::guard('admin')->user()->google_token);
+            $verify = Google2FA::verifyKey($secretKey, $request->input('gooleToken'));
+            if(!$verify){
+                Auth::guard('admin')->logout();
+                return JsonResphonse::JsonData(ApiErrDesc::GOOLE_VERIFY_FAIL[0],ApiErrDesc::GOOLE_VERIFY_FAIL[1]);
+            }
         }
+        
         // 记录登录次数,时间,ip
         $data = [
             'login_count' => ++Auth::guard('admin')->user()->login_count,

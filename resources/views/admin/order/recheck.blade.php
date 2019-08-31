@@ -28,7 +28,7 @@
                         
                         审核操作者: {{$recheck->re_operator}}<br>
                         审核状态: {!! shenhe_recheck_show_status($recheck->recheck_status) !!}<br>
-                        审核备注: {{$recheck->desc}}<br>
+                        审核备注: {!! interface_return_bank_info($recheck->desc) !!}<br>
                        
                     </p>
                     </div>

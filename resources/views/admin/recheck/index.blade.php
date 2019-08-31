@@ -78,7 +78,7 @@
                                     <!-- <td>{{$v->bank_info}}</td> -->
                                     <td>{{$v->amount}}</td>
                                     <td>{{$v->remarks}}</td>
-                                    <td>{{$v->desc}}</td>
+                                    <td>{!! interface_return_bank_info($v->desc) !!}</td>
                                     <!-- <td>{{$v->created_at}}</td> -->
                                     <td>{!! xiafa_order_show_status($v->order_status) !!}</td>
                                     <td>{!! shenhe_recheck_show_status($v->recheck_status) !!}</td>
