@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'fangqiang' => \App\Http\Middleware\fangqiang::class,
+        'OSS' => \App\Http\Middleware\OSS::class,
     ];
 
     /**

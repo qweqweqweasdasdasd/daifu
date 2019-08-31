@@ -23,6 +23,14 @@ class IndexController extends Controller
     }
 
     /**
+     * 域名直接跳转到登陆页面
+     */
+    public function jump()
+    {
+        return redirect()->route('login');
+    }
+
+    /**
      * 后台主页
      */
     public function index()
