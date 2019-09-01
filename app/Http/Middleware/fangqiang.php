@@ -48,6 +48,7 @@ class fangqiang
             
             $nowCa = strtolower(getCurrentControllerName().'-'.getCurrentMethodName());
             //删除重复的数值切换为字符串
+           
             $ca = implode(',',array_unique($ruleCa));
             if(strpos($ca,$nowCa) === false){
                 exit('没有权限!');

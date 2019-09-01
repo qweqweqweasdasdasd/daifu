@@ -164,6 +164,6 @@ function getCurrentAction()
     //dd($action);
     list($class, $method) = explode('@', $action);
     //$classes = explode(DIRECTORY_SEPARATOR,$class);
-    $class = str_replace('Controller','',substr(strrchr($class,DIRECTORY_SEPARATOR),1));
+    $class = str_replace('Controller','',substr(strrchr($class,'\\'),1));
     return ['controller' => $class, 'method' => $method];
 }
