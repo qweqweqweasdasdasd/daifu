@@ -10,6 +10,9 @@ Route::group(['middleware'=>['auth:admin','fangqiang','OSS']],function(){
     Route::get('/admin/welcome','Admin\IndexController@welcome');                   // 后台管理--welcome
     Route::get('/admin/index','Admin\IndexController@index')->name('admin.index');  // 后台管理--后台主页
     
+    Route::match(['get','post'],'/admin/manager/unbound','Admin\ManagerController@unbound');                               // 管理员重绑二次验证   
+    Route::match(['get','post'],'/admin/manager/reset','Admin\ManagerController@reset');                                   // 管理员密码重置   
+
     Route::resource('/admin/manager','Admin\ManagerController',['names' => ['show' => 'manager.status']]);              // 管理员资源路由管理  
     Route::match(['get','post'],'/admin/role/{role}/assign','Admin\RoleController@assign')->name('role.assign');        // 给角色分配权限                                                  
     Route::resource('/admin/role','Admin\RoleController',['names' => ['show' => 'role.status']]);                       // 角色资源路由管理
@@ -23,6 +26,7 @@ Route::group(['middleware'=>['auth:admin','fangqiang','OSS']],function(){
     
     Route::post('/admin/recheck/notice','Admin\RecheckController@notice');           // 审核未处理提醒
     Route::resource('/admin/recheck','Admin\RecheckController');                     // 审核下发订单
+    Route::post('/admin/recheck/Emailnotice','Admin\RecheckController@Emailnotice');           // 下发成功邮箱提醒  ??
     
     Route::post('/admin/bank/getOne/{bank}','Admin\BankController@getOne');                         // 获取到指定一条银行信息   
     Route::resource('/admin/bank','Admin\BankController',['names' => ['show' => 'bank.status']]);   // 银行资源路由管理

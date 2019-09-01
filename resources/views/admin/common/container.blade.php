@@ -36,8 +36,8 @@
             </a>
             <dl class="layui-nav-child">
                 
-                <!-- <dd>
-                    <a onclick="xadmin.open('个人信息','http://www.baidu.com')">个人信息</a></dd> -->
+                <dd>
+                    <a onclick="xadmin.open('重置密码','/admin/manager/reset',500,300)">重置密码</a></dd>
                 <!-- <dd>
                     <a onclick="xadmin.open('切换帐号','http://www.baidu.com')">切换帐号</a></dd> -->
                 <dd>

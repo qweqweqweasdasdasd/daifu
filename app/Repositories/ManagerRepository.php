@@ -37,6 +37,14 @@ class ManagerRepository extends BaseRepository
     }
 
     /**
+     * 获取到指定的id模型
+     */
+    public function ManagerFirst($mg_id)
+    {
+        return Manager::where('mg_id',$mg_id)->first();
+    }
+
+    /**
      * 创建新管理员数据返回id
      */
     public function ManagerSave($data)

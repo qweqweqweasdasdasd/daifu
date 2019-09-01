@@ -34,7 +34,8 @@
                         </form>
                     </div>
                     <div class="layui-card-header">
-                        <button class="layui-btn" onclick="xadmin.open('添加管理员','/admin/manager/create',600,800,1)"><i class="layui-icon"></i>添加</button>
+                        <button class="layui-btn" onclick="xadmin.open('添加管理员','/admin/manager/create',600,800,1)"><i class="layui-icon">&#xe608;</i>添加</button>
+                        <button class="layui-btn" onclick="xadmin.open('清除二次验证令牌','/admin/manager/unbound',500,350)"><i class="layui-icon">&#xe64c;</i>清除二次验证令牌</button>
                     </div>
                     <div class="layui-card-body ">
                         <table class="layui-table layui-form">

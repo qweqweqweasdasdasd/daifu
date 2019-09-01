@@ -16,6 +16,10 @@ class ApiErrDesc
 
     const USER_BAN_STATUS = ['2001','管理员状态被禁止使用,请联系超级管理员!'];
 
+    /**
+     * 谷歌二次验证
+     */
+    
     const GOOLE_VERIFY_FAIL = ['2002','谷歌二次验证失败'];
 
     const GOOLE_BINDING_NO = ['2003','谷歌账号没有绑定'];
@@ -44,6 +48,15 @@ class ApiErrDesc
 
     const MANAGER_UPDATE_FAIL = ['4002','管理员更新失败'];
 
+    const MANAGER_ID_FAIL = ['4003','管理员不得为空(格式不对)'];
+
+    const MANAGER_GOOLE_TOKEN_FAIL = ['4004','二次验证不得为空或者不为6位数字'];
+
+    const MANAGER_PASSWORD_NOT_EMPTY = ['4005','旧密码,新密码,确认密码不得为空'];
+
+    const MANAGER_OLD_PASSWORD_ERROR = ['4006','旧密码不对'];
+
+    const MANAGER_OLD_NEW_UNLIKE = ['4007','新旧密码不一致'];
     /**
      * 权限自定义错误
      */
@@ -66,6 +79,7 @@ class ApiErrDesc
      * 订单自定义错误
      */
     const ORDER_SAVE_FAIL = ['7000','订单添加失败'];
+
     const RECHECK_UNIQU = ['7001','下发60s内不得重复点击'];
     /**
      * 请求接口之后参数修改参数失败
