@@ -13,6 +13,7 @@ use App\Repositories\BankRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\RecheckRepository;
 use App\Repositories\ManagerRepository;
+use App\Repositories\MerchantRepository;
 
 class OrderController extends Controller
 {
@@ -32,14 +33,20 @@ class OrderController extends Controller
     protected $recheck;
 
     /**
+     * 商户仓库
+     */
+    protected $merchant;
+
+    /**
      * 初始化仓库
      */
-    public function __construct(OrderRepository $order,BankRepository $bank,ManagerRepository $manager,RecheckRepository $recheck)
+    public function __construct(OrderRepository $order,BankRepository $bank,ManagerRepository $manager,RecheckRepository $recheck,MerchantRepository $merchant)
     {
         $this->order = $order;
         $this->bank  = $bank;
         $this->manager = $manager;
         $this->recheck = $recheck;
+        $this->merchant = $merchant;
     }
 
     /**
@@ -59,6 +66,7 @@ class OrderController extends Controller
         $pathInfo = $this->order->getCurrentPathInfo();
         $getOrder = $this->order->GetOrder($whereData);
         $getManagerIdName = $this->manager->GetManagerIdName();
+        $merchants = $this->merchant->GetMerchantNameId();
         
         foreach($getOrder as $v){
            $v->operator = $getManagerIdName[$v->operator];
@@ -67,7 +75,12 @@ class OrderController extends Controller
            $v->bank_info = '银行编号: ' . $json->bankCode . ' 银行卡账号: ' . $json->bankAccountNo . ' 持卡姓名: ' . $json->bankAccountName;
         }
         //dump($getOrder);
-        return view('admin.order.index',compact('pathInfo','getOrder','whereData'));
+        return view('admin.order.index',compact(
+                        'pathInfo',
+                        'getOrder',
+                        'whereData',
+                        'merchants'
+                    ));
     }
 
     /**

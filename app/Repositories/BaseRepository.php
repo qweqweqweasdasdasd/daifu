@@ -60,6 +60,9 @@ class BaseRepository
         if($this->table == 'manager'){
             $field = 'mg_status';    
         }
+        if($this->table == 'merchant'){
+            $field = 'mer_status';
+        }
         $data = [$field => $status];
         return $this->CommonUpdate($id,$data);
     }

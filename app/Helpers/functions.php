@@ -167,3 +167,11 @@ function getCurrentAction()
     $class = str_replace('Controller','',substr(strrchr($class,'\\'),1));
     return ['controller' => $class, 'method' => $method];
 }
+
+/**
+ * 商户 md5 加密字符串隐藏12位
+ */
+function str_hide($str,$start,$len)
+{
+    return substr_replace($str,'*****',$start,$len);
+}

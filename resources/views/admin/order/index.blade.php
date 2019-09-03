@@ -21,9 +21,9 @@
                     <div class="layui-card-body ">
                         <form class="layui-form layui-col-space5">
                             <div class="layui-input-inline layui-show-xs-block">
-                                <input class="layui-input" placeholder="开始日" name="start" id="start"></div>
+                                <input class="layui-input" placeholder="开始日" name="start" id="start" value="{{$whereData['start']}}"></div>
                             <div class="layui-input-inline layui-show-xs-block">
-                                <input class="layui-input" placeholder="截止日" name="end" id="end"></div>
+                                <input class="layui-input" placeholder="截止日" name="end" id="end" value="{{$whereData['end']}}"></div>
                             
                             <div class="layui-input-inline layui-show-xs-block">
                                 <select name="order_status">
@@ -41,10 +41,24 @@
                             </div>
                         </form>
                     </div>
+                    <div class="layui-card-body">  
+                        
+                        <div class="layui-form layui-input-inline layui-show-xs-block">
+                            <!--  -->
+                            <select name="order_status"  lay-filter="order_status" id="sele">
+                                <option value="">选择商户</option>
+                                @foreach($merchants as $k=>$v)
+                                    <option value="{{$v->mer_id}}" >{{$v->mer_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                            <span class="layui-badge layui-bg-orange">余额: <span  id="amount"></span></span>
+                        </div>
+                    </div>
                     <div class="layui-card-header">  
                         <button class="layui-btn" onclick="xadmin.open('下发操作','/admin/order/create',800,600,1)">
                             <i class="layui-icon"></i>下发操作</button>
-                        <button type="button" class="layui-btn layui-btn-normal" title="点击获取最新当前余额" onclick="NewAmount()">点击获取最新当前余额: <span id="amount"></span> 元</button>
+                        <!-- <button type="button" class="layui-btn layui-btn-normal" title="点击获取最新当前余额" onclick="NewAmount()">点击获取最新当前余额: <span id="amount"></span> 元</button> -->
                     </div>
                     <div class="layui-card-body ">
                         <table class="layui-table layui-form">
@@ -107,6 +121,7 @@
     layui.use(['laydate','form'],function(){
         var laydate = layui.laydate;
         var form = layui.form;
+        var $ = layui.jquery;
 
         // 执行一个laydate实例
         laydate.render({
@@ -119,9 +134,51 @@
             type: 'datetime'
         });
 
+        $('#amount').html('请选择商户查看余额! ');
+        form.on('select(order_status)', function(data){
+            var mer_id = data.value;
+            // ajax
+            _ajax(mer_id);
+            console.log(data);
+        });
         
+        // 定时器
+        setInterval(function(){
+            var mer_id = $('#sele').find("option:selected").val();
+            if(mer_id == ''){
+                return false;
+            }
+            console.log(mer_id);
+            _ajax(mer_id)
+        },5000);
+
+        // 请求接口
+        function _ajax(mer_id){
+            $.ajax({
+                url:'/api/balance/query/'+mer_id,
+                data:'',
+                type:'post',
+                dataType:'json',
+                headers:{
+                    'X-CSRF-TOKEN':"{{csrf_token()}}"
+                },
+                success:function(res){
+                    if(res.code == 1){
+                        $('#amount').html(res.data+' 元');
+                    }
+                    if(res.code == 0){
+                        layer.msg(res.msg,function(){
+                            $('#amount').html(res.msg);
+                        });
+                    }
+
+                }
+            })
+        }
     })
+
+    
 </script>
-<script src="/x-admin/js/balance.query.js"></script>
+<script src="/x-admin/js/balance.select.query.js"></script>
 @endsection
 

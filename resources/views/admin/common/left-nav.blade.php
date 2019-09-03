@@ -77,6 +77,19 @@
             </li>
             <li>
                 <a href="javascript:;">
+                    <i class="layui-icon" lay-tips="商户管理">&#xe770;</i>
+                    <cite>商户管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li>
+                        <a onclick="xadmin.add_tab('商户列表','/admin/merchant')">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>商户列表</cite></a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
                     <i class="iconfont left-nav-li" lay-tips="银行管理">&#xe723;</i>
                     <cite>银行管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i></a>
@@ -88,19 +101,6 @@
                     </li>
                 </ul>
             </li>
-            <!-- <li>
-                <a href="javascript:;">
-                    <i class="iconfont left-nav-li" lay-tips="分类管理">&#xe723;</i>
-                    <cite>分类管理</cite>
-                    <i class="iconfont nav_right">&#xe697;</i></a>
-                <ul class="sub-menu">
-                    <li>
-                        <a onclick="xadmin.add_tab('多级分类','cate.html')">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>多级分类</cite></a>
-                    </li>
-                </ul>
-            </li> -->
             <!-- <li>
                 <a href="javascript:;">
                     <i class="iconfont left-nav-li" lay-tips="城市联动">&#xe723;</i>

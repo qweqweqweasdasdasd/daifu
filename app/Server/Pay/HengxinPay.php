@@ -10,16 +10,12 @@ class HengxinPay
     /**
      * 代付商户分配公钥
      */
-const REMIT_PUBLICK_KEY = "-----BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDKjbWFwVU7vfyld9hd7RGEMwVvT1ZtiEXk+uXWRFI7as279Z8zSwt278O4R9PPxyIf7jriNPzPIJzGVsh1081fIPIornY1F+VM5lcZ1CpgBVkVwp/YVAyoILLZsLwP+l8QY5COtWcWwm9m7nnTlspFnAWHlXTkG/9xexpjqYGH6QIDAQAB
------END PUBLIC KEY-----";
+    protected $remit_public_key = "";
 
     /**
      * 代付商户分配私钥
      */
-const REMIT_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----
-MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+mWuBUsXSQaRlRTsNv8h7TCkhk2PCshOF9BRmKob793t03jHl6P06GnL2hsw4Qth01M6ulZwwfyYAq95+s3Jo/+lyjkSvfPJChlMp9mkZjocLGly71A5ul1EQIejL1xntz3n9CU/jnQ3lbAgMBAAECgYBCcfEHCvwqVU2fc30cqQVI1opRC6UMrJPog0VxUkDPmWhOrtwh8hcbJYXdTfNwpcPYCZfkFU4cyjAi0AouU0XOvVoYtnErYpJR1Ulz+yousd3LAUaSdk10s4z0a52eqpuGAKup7GPB+bc0W8LPmhMuy2JXOON+W1A7uz3WDTKn0QJBAO9QJtXEO2UIFZSNk5LQJ7w3ZRAnyClF5zFNAZIhK40RvqDk4HBNQ7kX/7ndOBpMnZK0TqMXH1/q9LTmW6oF6+kCQQCvfC32u+WJyota6aQslxztvQdETclkGUvhchSioS7vv0RppjQF42DX2HLa6SzEqbu/oB7A94X7pIv5pc6WVaSjAkEAlgZcYjSju4Gm7bsXobkmv+LGU6ts2xr8hbat3ms2/zf5lqoFXcHCS/4UjfN2IV6YhgjNJ4buX1ZPVDz5iAwwSQJAfYfmVWbJ50ylbU5PK7qZbhNXfGvskZdq6YWy7zdAHS6EYNMMyd2CrETgvGoqpTAJ5yVCeqVWCdIGc3pBktcG4wJBANNMCu4s6N892VCCTvfPq4x6vrnOlRL4kv/DGTORpHUZ5K2P3yEdRwm4X4viAvVwbB3TwmWGxTn/kb4aelxYoKA=
------END RSA PRIVATE KEY-----";
+    protected $remit_private_key = "";
 
     /**
      * 线上网关域名
@@ -34,18 +30,28 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
     /**
      * 代付商户md5加密字符串
      */
-    protected $sign = '56cd5e494bd4435b929c2268d607f197';   //56cd5e494bd4435b929c2268d607f197
+    protected $sign = '';   // 56cd5e494bd4435b929c2268d607f197
 
     /**
      * 商户编号 merId
      */
-    protected $merId = '21910208';
+    protected $merId = '';  // 21910208
 
     /**
      * 版本号 1.1
      */
     protected $version = '1.1';
 
+    /**
+     * 初始化数据
+     */
+    public function __construct($merchant)
+    {
+        $this->sign = $merchant->sign;
+        $this->merId = $merchant->merchant_id;
+        $this->remit_private_key = $merchant->remit_private_key;
+        $this->remit_public_key = $merchant->remit_public_key;
+    }
 
     /**
      * 亨鑫余额查询接口
@@ -67,7 +73,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
         // 签名
         $map['sign'] = strtoupper(md5($str_build . 'key=' . $this->sign)); 
 
-        $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),self::REMIT_PUBLICK_KEY);
+        $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),$this->remit_public_key);
 
         $data = [
             'merId' => $this->merId,
@@ -86,7 +92,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
     {
         $request=json_decode(file_get_contents("php://input"),true);
         if(!empty($request['data']) && trim($request['data']) != ""){
-            $data = $this->rsa_private_decode($request['data'],self::REMIT_PRIVATE_KEY);
+            $data = $this->rsa_private_decode($request['data'],$this->remit_private_key);
             app('log')->info('亨鑫代付回调通知:'.json_encode($data));
             $map = [
                 'amount' => $data['amount'],
@@ -137,7 +143,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
         $map['bankBranchName'] = $data['bankBranchName'] = '';      // 银行分行
         $map['remarks'] = $data['remarks'];                         // 备注
         //公钥加密需开启openssl扩展 公钥和私钥需要按照上面的格式缩进否则无法识别
-        $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),self::REMIT_PUBLICK_KEY);
+        $rsa = $this->rsa_pub_encode(json_encode($map,JSON_UNESCAPED_UNICODE),$this->remit_public_key);
         $data = [
             'merId' => $this->merId,
             'version' => $this->version,
@@ -153,7 +159,7 @@ MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQL4FauLquemFz6mFt7+Rzh0NY7QO+m
      */
     public function decode($content)
     {
-        $res = $this->rsa_private_decode($content,self::REMIT_PRIVATE_KEY);
+        $res = $this->rsa_private_decode($content,$this->remit_private_key);
 
         return $res;
     }

@@ -8,6 +8,7 @@ use App\Server\Pay\HengxinPay;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
 use App\Repositories\RecheckRepository;
+use App\Repositories\MerchantRepository;
 
 class AppController extends Controller
 {
@@ -22,25 +23,40 @@ class AppController extends Controller
     protected $order;
 
     /**
+     * 商户仓库
+     */
+    protected $merchant;
+
+    /**
      * 初始化仓库
      */
-    public function __construct(RecheckRepository $recheck,OrderRepository $order)
+    public function __construct(RecheckRepository $recheck,OrderRepository $order,MerchantRepository $merchant)
     {
         $this->recheck = $recheck;
         $this->order   = $order;
+        $this->merchant = $merchant;
     }
 
     /**
      * 账户余额
      */
-    public function BalanceQuery()
+    public function BalanceQuery(Request $request,$merid)
     {
-        $res = (new HengxinPay())->CheckBalance();
+        $merchant = $this->merchant->CommonFirst($merid);
+
+        if(empty($merchant->remit_public_key) || empty($merchant->remit_private_key)){
+            return ['code'=>0,'msg'=>'公私钥为空'];
+        }
+        try {
+            $res = (new HengxinPay($merchant))->CheckBalance();
+        } catch (\Exception $e) {
+            return ['code'=>0,'msg'=>$e->getMessage()];
+        }
 
         if($res->code != 200){
-            return ['code'=>0,'msg'=>'未知错误'];
+            return ['code'=>0,'msg'=>$res->message];
         };
-
+        
         return ['code'=>1,'msg'=>$res->message,'data'=>$res->data->usableAmount];
     }
 

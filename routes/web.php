@@ -20,13 +20,16 @@ Route::group(['middleware'=>['auth:admin','fangqiang','OSS']],function(){
     Route::resource('/admin/rule','Admin\RuleController');                                                              // 权限资源路由管理
     
 
+    Route::get('/admin/merchant/deploy/{merid}','Admin\MerchantController@deploy');  // 配置公私钥view
+    Route::post('/admin/merchant/doDeploy','Admin\MerchantController@doDeploy');     // 配置公私钥
+    Route::resource('/admin/merchant','Admin\MerchantController');                   // 后台管理--多商家
+    
     Route::get('/admin/order/recheck/{id}','Admin\OrderController@recheck');         // 查看审核订单   
     Route::get('/admin/order/check/{id}','Admin\OrderController@check');             // 查看下发订单
     Route::resource('/admin/order','Admin\OrderController');                         // 订单资源路由管理
     
     Route::post('/admin/recheck/notice','Admin\RecheckController@notice');           // 审核未处理提醒
     Route::resource('/admin/recheck','Admin\RecheckController');                     // 审核下发订单
-    Route::post('/admin/recheck/Emailnotice','Admin\RecheckController@Emailnotice');           // 下发成功邮箱提醒  ??
     
     Route::post('/admin/bank/getOne/{bank}','Admin\BankController@getOne');                         // 获取到指定一条银行信息   
     Route::resource('/admin/bank','Admin\BankController',['names' => ['show' => 'bank.status']]);   // 银行资源路由管理
@@ -38,5 +41,7 @@ Route::group(['middleware'=>['auth:admin','fangqiang','OSS']],function(){
  */
 Route::get('/secret/ShowManager','Admin\GoogleTokenController@ShowManager');                           // 后台管理--显示管理员
 Route::post('/secret/GoogleToken','Admin\GoogleTokenController@GoogleToken');                          // 后台管理--谷歌验证
+
+
 
 

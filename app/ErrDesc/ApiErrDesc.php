@@ -57,6 +57,8 @@ class ApiErrDesc
     const MANAGER_OLD_PASSWORD_ERROR = ['4006','旧密码不对'];
 
     const MANAGER_OLD_NEW_UNLIKE = ['4007','新旧密码不一致'];
+
+
     /**
      * 权限自定义错误
      */
@@ -70,21 +72,30 @@ class ApiErrDesc
      * 银行自定义错误
      */
     const BANK_SAVE_FAIL = ['6000','银行添加失败'];
-
+    
     const BANK_DELETED_FAIL = ['6002','银行删除失败'];
-
+    
     const BANK_UPDATE_FAIL = ['6001','银行更新失败'];
     
     /**
      * 订单自定义错误
      */
     const ORDER_SAVE_FAIL = ['7000','订单添加失败'];
-
+    
     const RECHECK_UNIQU = ['7001','下发60s内不得重复点击'];
     /**
      * 请求接口之后参数修改参数失败
      */
     const REQUEST_FAIL = ['8000','请求接口之后参数修改参数失败'];
+    
+    /**
+     * 商户自定义错误
+     */
+    const MERCHANT_SAVA_FAIL = ['9000','商户信息保存失败'];
 
+    const MERCHANT_UPDATE_FAIL = ['9001','商户信息更新失败'];
 
+    const MERCHANT_DELETED_FAIL = ['9002','商户信息删除失败'];
+
+    const PUBLIC_PRIVATE_UPDATE_FAIL = ['9003','公私钥更新失败'];
 }

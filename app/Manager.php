@@ -9,7 +9,7 @@ class Manager extends Authenticatable
     protected $primaryKey = 'mg_id';
 	protected $table = 'manager';
     protected $fillable = [
-    	'mg_name','password','mg_status','mg_email','login_count','last_login_time','last_login_ip','session_id','google_token'
+    	'mg_name','password','mg_status','mg_email','login_count','last_login_time','last_login_ip','session_id','google_token','is_send_email'
     ];
 
     protected $rememberTokenName = '';
