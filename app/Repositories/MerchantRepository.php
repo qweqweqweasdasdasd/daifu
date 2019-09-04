@@ -35,6 +35,13 @@ class MerchantRepository extends BaseRepository
     }
 
     /**
+     * 正常商户所有信息
+     */
+    public function GetMerchants()
+    {
+        return Merchant::get(['mer_id','mer_name','mer_status','merchant_id']);
+    }
+    /**
      * 获取到所有商户信息名称和id
      */
     public function GetMerchantNameId()

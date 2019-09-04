@@ -17,6 +17,7 @@
             <div class="layui-col-md12">
                 <div class="layui-card">
                     <div class="layui-card-header">数据统计</div>
+                    @foreach($D as $data)
                     <div class="layui-card-body ">
                         <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
                             <li class="layui-col-md2 layui-col-xs6">
@@ -63,6 +64,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endforeach
                 </div>
             </div>  
             <!-- <div class="layui-col-md12">
