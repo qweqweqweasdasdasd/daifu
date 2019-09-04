@@ -60,6 +60,7 @@ class IndexController extends Controller
             ];
             
             $data = [
+                'mer_name' => $v->mer_name,
                 'bank' => $this->count->CountBankNumber(),
                 'tijiao' => $this->count->CountOrderNumber($whereData),
                 'daozhang' => $this->count->CountDaozhangNumber($whereData),

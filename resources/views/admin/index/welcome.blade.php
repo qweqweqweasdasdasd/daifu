@@ -57,7 +57,7 @@
                             </li>
                             <li class="layui-col-md2 layui-col-xs6 ">
                                 <a href="javascript:;" onclick="location.reload()" class="x-admin-backlog-body">
-                                    <h3>第三方余额</h3>
+                                    <h3>{{$data['mer_name']}}的余额</h3>
                                     <p>
                                         <cite>{{$data['HengXinBalance']}} 元</cite></p>
                                 </a>

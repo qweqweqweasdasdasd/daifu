@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Google2FA;
 use App\Order;
+use App\Manager;
 use App\Libs\ToolRedis;
 use App\ErrDesc\ApiErrDesc;
 use Illuminate\Http\Request;
@@ -117,6 +119,17 @@ class RecheckController extends Controller
             if($res){
                 return JsonResphonse::JsonData(ApiErrDesc::RECHECK_UNIQU[0],ApiErrDesc::RECHECK_UNIQU[1]);
             }
+        }
+        
+        // 二次验证
+        $secretKey = Manager::find(1)->google_token;
+        
+        if(!$secretKey){
+            return JsonResphonse::JsonData(ApiErrDesc::GOOLE_BINDING_NO[0],ApiErrDesc::GOOLE_BINDING_NO[1]);
+        }
+        $verify = Google2FA::verifyKey($secretKey, $request->input('gooleToken'));
+        if(!$verify){
+            return JsonResphonse::JsonData(ApiErrDesc::GOOLE_VERIFY_FAIL[0],ApiErrDesc::GOOLE_VERIFY_FAIL[1]);
         }
         
         // 下发提交金额是否小于第三方余额

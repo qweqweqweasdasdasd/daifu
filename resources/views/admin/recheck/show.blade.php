@@ -54,12 +54,12 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label for="notifyUrl" class="layui-form-label">
-                    回调地址：
+                    <label for="gooleToken" class="layui-form-label">
+                    二次验证：
                     </label>
                     <div class="layui-input-block">
-                        <input type="text" id="notifyUrl" name="notifyUrl"
-                        autocomplete="off" class="layui-input" readonly="readonly">
+                        <input type="text" id="gooleToken" name="gooleToken"
+                        autocomplete="off" class="layui-input" placeholder="只有超级管理员二次验证可以通过">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -112,6 +112,12 @@
                         })
                     }
                     if(res.code == '7001'){
+                        layer.msg(res.msg,{icon:5})
+                    }
+                    if(res.code == '2003'){
+                        layer.msg(res.msg,{icon:5})
+                    }
+                    if(res.code == '2002'){
                         layer.msg(res.msg,{icon:5})
                     }
                     if(res.code == '422'){
