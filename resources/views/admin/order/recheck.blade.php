@@ -15,7 +15,7 @@
                 <li class="layui-timeline-item">
                     <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
                     <div class="layui-timeline-content layui-text">
-                    <h3 class="layui-timeline-title">{{$recheck->created_at}}</h3>
+                    <h3 class="layui-timeline-title">{{$recheck->created_at}} - {{$order->formMerchant}}</h3>
                     <p>
                         下发订单号: {{$order->merOrderNo}}<br>
                         下发金额: {{$order->amount}}<br>
@@ -29,7 +29,7 @@
                         审核操作者: {{$recheck->re_operator}}<br>
                         审核状态: {!! shenhe_recheck_show_status($recheck->recheck_status) !!}<br>
                         审核备注: {!! interface_return_bank_info($recheck->desc) !!}<br>
-                       
+                        
                     </p>
                     </div>
                 </li>

@@ -119,7 +119,7 @@ class HengxinPay
     /**
      * 亨鑫余额代付接口
      */
-    public function remitSubmit($data)
+    public function RemitSubmit($data)
     {
         // 组装签名参数
         $map = [

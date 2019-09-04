@@ -9,7 +9,7 @@ class Order extends Model
     protected $primaryKey = 'order_id';
 	protected $table = 'order';
     protected $fillable = [
-    	'merOrderNo','amount','remarks','operator','bank_info','order_status'
+    	'merOrderNo','amount','remarks','operator','bank_info','order_status','merchant_id'
     ];
 
     /**

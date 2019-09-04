@@ -12,6 +12,7 @@ use App\Resphonse\JsonResphonse;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
 use App\Repositories\RecheckRepository;
+use App\Repositories\MerchantRepository;
 
 class RecheckController extends Controller
 {
@@ -30,12 +31,22 @@ class RecheckController extends Controller
     protected $order;
 
     /**
+     * 商户仓库
+     */
+    protected $merchant;
+
+    /**
+     * 订单重复提交问题开关
+     */
+    protected $ONOFF = false;
+    /**
      * 初始化仓库
      */
-    public function __construct(RecheckRepository $recheck,OrderRepository $order)
+    public function __construct(RecheckRepository $recheck,OrderRepository $order,MerchantRepository $merchant)
     {
         $this->recheck = $recheck;
         $this->order   = $order;
+        $this->merchant = $merchant;
     }
 
     /**
@@ -49,13 +60,23 @@ class RecheckController extends Controller
             'start' => !empty($request->get('start'))? $request->get('start') :'',
             'end' => !empty($request->get('end'))? $request->get('end') :'',
             'recheck_status' => !empty($request->get('recheck_status'))? $request->get('recheck_status') :'',
-            'merOrderNo' => !empty($request->get('merOrderNo'))? $request->get('merOrderNo') :''
+            'merOrderNo' => !empty($request->get('merOrderNo'))? $request->get('merOrderNo') :'',
+            'merchant_id' => !empty($request->get('merchant_id'))? $request->get('merchant_id') :'',
         ];
 
+        $merchants = $this->merchant->GetMerchantNameId();
         $pathInfo = $this->recheck->getCurrentPathInfo();
         $recheck = $this->recheck->GetRecheck($whereData);
-        //dump($whereData);
-        return view('admin.recheck.index',compact('pathInfo','recheck','whereData'));
+        $data = [];
+        foreach($merchants->toArray() as $k => $v) {
+            $data[$v['mer_id']] = $v['mer_name'];
+        }
+
+        foreach ($recheck as $k => $v) {
+            $v->mer_name = @$data[$v->merchant_id];
+        }
+        //dump($recheck);
+        return view('admin.recheck.index',compact('pathInfo','recheck','whereData','merchants'));
     }
 
 
@@ -91,17 +112,19 @@ class RecheckController extends Controller
     public function update(Request $request, $id)
     {
         // 订单重复提交问题 prefix
-        $res = ToolRedis::RecheckOrderUniqu($this->prefix,$request->get('merOrderNo'));
-        if($res){
-            return JsonResphonse::JsonData(ApiErrDesc::RECHECK_UNIQU[0],ApiErrDesc::RECHECK_UNIQU[1]);
+        if($this->ONOFF){
+            $res = ToolRedis::RecheckOrderUniqu($this->prefix,$request->get('merOrderNo'));
+            if($res){
+                return JsonResphonse::JsonData(ApiErrDesc::RECHECK_UNIQU[0],ApiErrDesc::RECHECK_UNIQU[1]);
+            }
         }
         
         // 下发提交金额是否小于第三方余额
-        $res = ExtendPay::VerifyAmount($request->get('amount'));
+        $res = (new ExtendPay($request->get('merchant_id')))->VerifyAmount($request->get('amount'));
         if(!$res['code']){
             return JsonResphonse::JsonData($res['code'],$res['msg']);
         }
-
+        
         // 组装接口 && 请求代付接口(队列) 
         $d = [
             'merOrderNo' => $request->get('merOrderNo'),
@@ -112,7 +135,8 @@ class RecheckController extends Controller
             'bankAccountName' => $request->get('bankAccountName'),
             'remarks' => $request->get('remarks')
         ];
-        $res = (new HengxinPay())->remitSubmit($d);
+        $res = (new ExtendPay($request->get('merchant_id')))->ExtendRemitSubmit($d);
+        
         // $res->code = 200;
         // $res->msg = '1111';
         // 事务

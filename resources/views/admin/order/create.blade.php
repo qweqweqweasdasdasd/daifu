@@ -20,6 +20,20 @@
                 </div>
                 <div class="layui-form-item">
                     <label for="username" class="layui-form-label">
+                        <span class="x-red">*</span>从商户下发：
+                    </label>
+                    <div class="layui-input-block">
+                        <select id="" name="merchant_id" class="valid" lay-filter="select">
+                            <option value="">选择商户</option>
+                            @foreach($merchant as $v)
+                            <option value="{{$v->mer_id}}">{{$v->mer_name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="username" class="layui-form-label">
                         <span class="x-red">*</span>下发银行：
                     </label>
                     <div class="layui-input-block">

@@ -34,6 +34,14 @@
                                 </select>
                             </div>
                             <div class="layui-input-inline layui-show-xs-block">
+                                <select name="merchant_id">
+                                    <option value="">选择商户</option>
+                                    @foreach($merchants as $k=>$v)
+                                        <option value="{{$v->mer_id}}" @if($v->mer_id == $whereData['merchant_id']) selected @endif>{{$v->mer_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="layui-input-inline layui-show-xs-block">
                                 <input type="text" name="merOrderNo" placeholder="请输入订单号" autocomplete="off" class="layui-input" value="{{$whereData['merOrderNo']}}" style="width:250px;"></div>
                             <div class="layui-input-inline layui-show-xs-block">
                                 <button class="layui-btn" lay-submit="" lay-filter="sreach" >
@@ -45,7 +53,7 @@
                         
                         <div class="layui-form layui-input-inline layui-show-xs-block">
                             <!--  -->
-                            <select name="order_status"  lay-filter="order_status" id="sele">
+                            <select name=""  lay-filter="order_status" id="sele">
                                 <option value="">选择商户</option>
                                 @foreach($merchants as $k=>$v)
                                     <option value="{{$v->mer_id}}" >{{$v->mer_name}}</option>
@@ -65,8 +73,9 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>来自商户</th>
                                     <th>订单编号(查看订单信息)</th>
-                                    <!-- <th>下发金额</th> -->
+                                    <th>下发金额</th>
                                     <!-- <th>操作者</th> -->
                                     <!-- <th>下发卡详细</th> -->
                                     <th>审核详情</th>
@@ -82,8 +91,9 @@
                                 @foreach($getOrder as $v)
                                 <tr>
                                     <td>{{$v->order_id}}</td>
+                                    <td>{{$v->mer_name}}</td>
                                     <td>{{$v->merOrderNo}} <a href="#" onclick="xadmin.open('查看订单信息','/admin/order/check/{{$v->order_id}}',700,500)" >&nbsp;&nbsp;<i class="layui-icon">&#xe615;</i></a></td>
-                                    <!-- <td>{{$v->amount}}</td> -->
+                                    <td>{{$v->amount}}</td>
                                     <!-- <td>{{$v->operator}}</td> -->
                                     <!-- <td>{{$v->bank_info}}</td> -->
                                     <td><a href="#" onclick="xadmin.open('查看订单详情','/admin/order/recheck/{{$v->order_id}}',700,500)" class="layui-btn layui-btn-warm">审核查看</a></td>
@@ -105,7 +115,7 @@
                     </div>
                     <div class="layui-card-body ">
                         <div class="page">
-                        {{ $getOrder->appends(['start' => $whereData['start'],'end' => $whereData['end'],'merOrderNo' => $whereData['merOrderNo'],'order_status' => $whereData['order_status']])->links() }}
+                        {{ $getOrder->appends(['start' => $whereData['start'],'end' => $whereData['end'],'merOrderNo' => $whereData['merOrderNo'],'merchant_id' => $whereData['merchant_id'],'order_status' => $whereData['order_status']])->links() }}
                         </div>
                     </div>
                 </div>
@@ -179,6 +189,6 @@
 
     
 </script>
-<script src="/x-admin/js/balance.select.query.js"></script>
+<!-- <script src="/x-admin/js/balance.select.query.js"></script> -->
 @endsection
 

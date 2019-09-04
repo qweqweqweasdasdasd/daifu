@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Order;
 use Illuminate\Http\Request;
-use App\Server\Pay\HengxinPay;
+use App\Server\Pay\ExtendPay;
+// use App\Server\Pay\HengxinPay;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
 use App\Repositories\RecheckRepository;
@@ -42,13 +43,9 @@ class AppController extends Controller
      */
     public function BalanceQuery(Request $request,$merid)
     {
-        $merchant = $this->merchant->CommonFirst($merid);
-
-        if(empty($merchant->remit_public_key) || empty($merchant->remit_private_key)){
-            return ['code'=>0,'msg'=>'公私钥为空'];
-        }
+        
         try {
-            $res = (new HengxinPay($merchant))->CheckBalance();
+            $res = (new ExtendPay($merid))->ExtendCheckBalance();
         } catch (\Exception $e) {
             return ['code'=>0,'msg'=>$e->getMessage()];
         }

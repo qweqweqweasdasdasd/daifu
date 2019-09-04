@@ -60,21 +60,26 @@ class OrderController extends Controller
             'start' => !empty($request->get('start'))? $request->get('start') :'',
             'end' => !empty($request->get('end'))? $request->get('end') :'',
             'order_status' => !empty($request->get('order_status'))? $request->get('order_status') :'',
-            'merOrderNo' => !empty($request->get('merOrderNo'))? $request->get('merOrderNo') :''
+            'merOrderNo' => !empty($request->get('merOrderNo'))? $request->get('merOrderNo') :'',
+            'merchant_id' => !empty($request->get('merchant_id'))? $request->get('merchant_id') :''
         ];
         
         $pathInfo = $this->order->getCurrentPathInfo();
         $getOrder = $this->order->GetOrder($whereData);
         $getManagerIdName = $this->manager->GetManagerIdName();
         $merchants = $this->merchant->GetMerchantNameId();
+        $data = [];
+        foreach($merchants->toArray() as $k => $v) {
+            $data[$v['mer_id']] = $v['mer_name'];
+        }
         
         foreach($getOrder as $v){
            $v->operator = $getManagerIdName[$v->operator];
            $json =  json_decode($v->bank_info);
-
+           $v->mer_name = @$data[$v->merchant_id];
            $v->bank_info = '银行编号: ' . $json->bankCode . ' 银行卡账号: ' . $json->bankAccountNo . ' 持卡姓名: ' . $json->bankAccountName;
         }
-        //dump($getOrder);
+        
         return view('admin.order.index',compact(
                         'pathInfo',
                         'getOrder',
@@ -91,8 +96,10 @@ class OrderController extends Controller
     public function create()
     {
         $bankNoName = $this->bank->GetBankAccountNoName();
-        //dump($bankNoName);
-        return view('admin.order.create',compact('bankNoName'));
+        $merchant = $this->merchant->GetMerchantNameId();
+
+        //dump($merchant);
+        return view('admin.order.create',compact('bankNoName','merchant'));
     }
 
     /**
@@ -103,9 +110,11 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
+        $merchant = $this->merchant->CommonFirst($request->get('merchant_id'));
+        
         // 下发提交金额是否小于第三方余额
-        $res = ExtendPay::VerifyAmount($request->get('amount'));
-        //dd($res);
+        $res = (new ExtendPay($request->get('merchant_id')))->VerifyAmount($request->get('amount'));
+         
         if(!$res['code']){
             return JsonResphonse::JsonData($res['code'],$res['msg']);
         }
@@ -113,6 +122,7 @@ class OrderController extends Controller
             'bankCode' => $request->get('bankCode'),
             'bankAccountNo' => $request->get('bankAccountNo'),
             'bankAccountName' => $request->get('bankAccountName'),
+            'mer_name' => $merchant->mer_name
         ],JSON_UNESCAPED_UNICODE);
 
         $data = [
@@ -121,12 +131,13 @@ class OrderController extends Controller
             'bank_info' => $json, 
             'remarks' => $request->get('remarks'),
             'operator' => \Auth::guard('admin')->user()->mg_id,
-            'order_status' => Order::XIAFA_SUBMIT[0]
+            'order_status' => Order::XIAFA_SUBMIT[0],
+            'merchant_id' => $request->get('merchant_id'),
         ];
         \DB::beginTransaction();
         try {
             $order = $this->order->SaveOrder($data);    //  下发订单
-            $this->recheck->CommonSave(['order_id'=>$order->order_id]); //  复审订单
+            $this->recheck->CommonSave(['order_id'=>$order->order_id,'merchant_id'=>$request->get('merchant_id')]); //  复审订单
             \DB::commit();
             return JsonResphonse::ResphonseSuccess();
         } catch (\Exception $e) {
@@ -142,12 +153,11 @@ class OrderController extends Controller
     {
         $order = $this->order->CommonFirst($id);
         $getManagerIdName = $this->manager->GetManagerIdName();
-        
         $order->operator = $getManagerIdName[$order->operator];
         $json =  json_decode($order->bank_info);
+        
         $order->bank_info = '银行编号: ' . $json->bankCode . ' 银行卡账号: ' . $json->bankAccountNo . ' 持卡姓名: ' . $json->bankAccountName;
-      
-        //dump($order);
+        $order->formMerchant = $json->mer_name;
         return view('admin.order.check',compact('order'));
     }
 
@@ -162,7 +172,7 @@ class OrderController extends Controller
         $order->operator = $getManagerIdName[$order->operator];
         $json =  json_decode($order->bank_info);
         $order->bank_info = '银行编号: ' . $json->bankCode . ' 银行卡账号: ' . $json->bankAccountNo . ' 持卡姓名: ' . $json->bankAccountName;
-
+        $order->formMerchant = $json->mer_name;
         return view('admin.order.recheck',compact('recheck','order'));
     }
    

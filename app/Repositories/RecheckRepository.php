@@ -49,6 +49,9 @@ class RecheckRepository extends BaseRepository
                         if( !empty($d['recheck_status']) ){
                             $query->where('recheck_status',$d['recheck_status']);
                         }
+                        if( !empty($d['merchant_id']) ){
+                            $query->where('recheck.merchant_id',$d['merchant_id']);
+                        }
                         if( !empty($d['merOrderNo']) ){
                             $query->where('merOrderNo',$d['merOrderNo']);
                         }

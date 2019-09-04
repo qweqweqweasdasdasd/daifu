@@ -53,6 +53,9 @@ class OrderRepository extends BaseRepository
                         if( !empty($d['merOrderNo']) ){
                             $query->where('merOrderNo',$d['merOrderNo']);
                         }
+                        if( !empty($d['merchant_id']) ){
+                            $query->where('merchant_id',$d['merchant_id']);
+                        }
                         if( !empty($d['start']) && !empty($d['end']) &&  $d['end'] >= $d['start']){
                             $query->whereBetween('order.created_at',[$d['start'],$d['end']] );
                         }

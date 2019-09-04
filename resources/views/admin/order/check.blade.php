@@ -15,8 +15,9 @@
                 <li class="layui-timeline-item">
                     <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
                     <div class="layui-timeline-content layui-text">
-                    <h3 class="layui-timeline-title">{{$order->created_at}}</h3>
-                    <p>下发订单号: {{$order->merOrderNo}}<br>
+                    <h3 class="layui-timeline-title">{{$order->created_at}} - {{$order->formMerchant}}</h3>
+                    <p><br>
+                        下发订单号: {{$order->merOrderNo}}<br>
                         下发金额: {{$order->amount}}<br>
                         下发操作者: {{$order->operator}}<br>
                         下发状态: {!! xiafa_order_show_status($order->order_status) !!}<br>

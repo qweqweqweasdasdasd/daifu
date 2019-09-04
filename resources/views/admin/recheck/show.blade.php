@@ -6,6 +6,7 @@
     <div class="layui-fluid">
         <div class="layui-row">
             <form class="layui-form">
+                <input type="hidden" name="merchant_id" value="{{$order->merchant_id}}">
                 <input type="hidden" name="order_id" value="{{$order->order_id}}" readonly="readonly">
                 <div class="layui-form-item">
                     <label for="merOrderNo" class="layui-form-label">
